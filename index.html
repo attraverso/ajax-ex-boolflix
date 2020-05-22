@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>I believe I can Boolflix</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.2/handlebars.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="header-left">
+          <a href="https://fontmeme.com/netflix-font/"><img src="https://fontmeme.com/permalink/200522/c2afbefb193becb208cc4f7dcf0a14da.png" alt="netflix-font" border="0"></a>
+        </div>
+        <div class="header-right">
+          <input class="searchbar" type="text">
+          <button class="header-search-btn" type="button" name="button">Search</button>
+        </div>
+      </div>
+
+    </header>
+    <main>
+      <div class="container">
+        <div id="movies-display">
+
+        </div>
+      </div>
+
+      <script id="list-template" type="text/x-handlebars-template">
+        <div class="movie-card">
+          <ul>
+            <li data-info-type="title">Title: {{title}}</li>
+            <li data-info-type="original-title">Original title: {{originalTitle}}</li>
+            <li data-info-type="language">Language: {{language}}</li>
+            <li data-info-type="vote">Average vote: {{vote}}</li>
+          </ul>
+        </div>
+      </script>
+    </main>
+  </body>
+</html>
