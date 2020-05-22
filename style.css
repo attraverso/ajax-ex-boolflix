@@ -14,18 +14,11 @@ header {
   height: 68px;
   position: fixed;
   padding-top: 21px;
-  /* background-color: green; */
 }
 
 main {
   padding-top: 68px;
 }
-
-/*.setup {
-  width: 100px;
-  height: 100px;
-  background-color: purple;
-}*/
 
 .container {
   width: 95%;
