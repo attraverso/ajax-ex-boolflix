@@ -25,9 +25,21 @@ function handleData(resultsArray) {
   for (var i = 0; i < resultsArray.length; i++) {
     var currentMovie = resultsArray[i];
     printMovieDetails(currentMovie);
+    printFlagIfAvaliable(currentMovie);
     printStars(currentMovie.vote_average);
   }
 };
+
+function printFlagIfAvaliable(forItem) {
+  var availableLanguages = ['de', 'en', 'es', 'fr', 'it'];
+  if (availableLanguages.includes(forItem.original_language.toString())) {
+    console.log('snafu is present');
+    $('.movie-card:last-child li[data-info-type="language"]').remove();
+  } else {
+    console.log("snafu isn't here");
+    $('.movie-card:last-child li[data-info-type="lang-flag"]').remove();
+  }
+}
 
 /*PRINT-MOVIE-DETAILS - grab info on a singe item and print it in the template*/
 function printMovieDetails(item) {
@@ -35,6 +47,7 @@ function printMovieDetails(item) {
     'title': item.title,
     'originalTitle': item.original_title,
     'language': item.original_language,
+    'flag': item.original_language,
   }
   /*** DELETE - var created because I needed the log ***/
   var title = item.title;
