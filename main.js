@@ -16,6 +16,13 @@ $(document).ready(function() {
     search();
   });
 
+  /*on click on item-card*/
+  $('#results-display').on('click', '.item-card', function() {
+    // alert('hello');
+    $(this).children('.item-card-img').toggleClass('active');
+    $(this).children('.item-card-info').toggleClass('active');
+  })
+
 /* * FUNCTIONS - alphabetical order * */
 
 /*CALL-AJAX - call the TMD API via ajax*/
@@ -44,13 +51,21 @@ function handleData(resultsArray) {
     noDuplicateTitle(currentMovie);
     printFlagIfAvaliable(currentMovie);
     printStars(currentMovie.vote_average);
+    noEmptyCards(currentMovie);
   }
 };
 
+/*NO-DUPLICATE-TITLE - if the title and original title are the same, show only one*/
 function noDuplicateTitle(item) {
   if (item.title != undefined && (item.title == item.original_title) || item.name != undefined && (item.name == item.original_name)) {
     $('.item-card:last-child li[data-info-type="original-title"]').remove();
-  } else  {
+  }
+}
+
+/*NO-EMPTY-CARDS - if a card has no backdrop, remove it entirely*/
+function noEmptyCards(item) {
+  if (item.backdrop_path == null) {
+    $('.item-card:last-child').remove();
   }
 }
 
@@ -66,13 +81,14 @@ function printFlagIfAvaliable(forItem) {
 
 /*PRINT-MOVIE-DETAILS - grab info on a singe item and print it in the template*/
 function printMovieDetails(item) {
-  var posterTrimmed = item.poster_path;
-  var poster = 'https://image.tmdb.org/t/p/w185/' + posterTrimmed;
+  var posterTrimmed = item.backdrop_path;
+  var poster = 'https://image.tmdb.org/t/p/w300/' + posterTrimmed;
   var context = {
     'title': item.title || item.name,
     'originalTitle': item.original_title || item.original_name,
     'language': item.original_language,
     'poster': poster,
+    'synopsis': item.overview,
   }
 
   /*** DELETE - vars created because I needed the logs ***/

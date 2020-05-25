@@ -88,15 +88,35 @@ main {
 
 .item-card {
   width: 300px;
-  padding: 5px;
+  height: 169px;
   margin: 10px 0;
-  background-color: #333;
+  /* background-color: #333; */
   text-align: center;
+  position: relative;
+  overflow-y: auto;
 }
 
-.item-card img {
-  width: 185;
+.item-card-img {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
+
+.item-card-info {
+  display: none;
+}
+
+.item-card-img.active {
+  display: none;
+}
+
+.item-card-info.active {
+  display: inline-block;
+}
+
+
+
 
 .item-card li {
   list-style-type: none;
