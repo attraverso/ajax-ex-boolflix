@@ -18,7 +18,7 @@ $(document).ready(function() {
 
 /* * FUNCTIONS - alphabetical order * */
 
-/*CALL-AJAX - */
+/*CALL-AJAX - call the TMD API via ajax*/
 function callAjax(searchString, url) {
   $.ajax({
     'url': url,
@@ -41,33 +41,49 @@ function handleData(resultsArray) {
   for (var i = 0; i < resultsArray.length; i++) {
     var currentMovie = resultsArray[i];
     printMovieDetails(currentMovie);
+    noDuplicateTitle(currentMovie);
     printFlagIfAvaliable(currentMovie);
     printStars(currentMovie.vote_average);
   }
 };
 
+function noDuplicateTitle(item) {
+  if (item.title != undefined && (item.title == item.original_title) || item.name != undefined && (item.name == item.original_name)) {
+    $('.item-card:last-child li[data-info-type="original-title"]').remove();
+  } else  {
+  }
+}
+
 /*PRINT-FLAG-IF-AVAILABLE - if you have a flag icon for the requestedlanguage, show that. Otherwise show language code.*/
 function printFlagIfAvaliable(forItem) {
   var availableLanguages = ['ar', 'de', 'en', 'es', 'fr', 'it', 'zh'];
   if (availableLanguages.includes(forItem.original_language.toString())) {
-    $('.movie-card:last-child li[data-info-type="language"]').remove();
+    $('.item-card:last-child li[data-info-type="language"]').remove();
   } else {
-    $('.movie-card:last-child li[data-info-type="lang-flag"]').remove();
+    $('.item-card:last-child li[data-info-type="lang-flag"]').remove();
   }
 };
 
 /*PRINT-MOVIE-DETAILS - grab info on a singe item and print it in the template*/
 function printMovieDetails(item) {
+  var posterTrimmed = item.poster_path;
+  var poster = 'https://image.tmdb.org/t/p/w185/' + posterTrimmed;
   var context = {
     'title': item.title || item.name,
     'originalTitle': item.original_title || item.original_name,
     'language': item.original_language,
+    'poster': poster,
   }
-  /*** DELETE - vars created because I needed the log ***/
+
+  /*** DELETE - vars created because I needed the logs ***/
   var title = item.title;
-  console.log(title);
+  // console.log('title:' + title);
+  var origTitle = item.original_title;
+  // console.log('orig title:' + origTitle);
   var name = item.name;
-  console.log(name);/*end D*/
+  // console.log('name :' + name);
+  var origName = item.original_name;
+  // console.log('orig name :' + origName);/*end D*/
 
   var html = listTemplate(context);
   $('#results-display').append(html);
@@ -76,9 +92,9 @@ function printMovieDetails(item) {
 /*PRINT-STARS - get average vote, fit to scale of 5, print 5 empty stars and fill them out according to average vote*/
 function printStars(voteAverage) {
   var starsNr = Math.round(voteAverage / 2);
-  var stars = $('.movie-card:last-child li[data-info-type="vote"] i').slice(0, starsNr);
+  var stars = $('.item-card:last-child li[data-info-type="vote"] i').slice(0, starsNr);
   for (var i = 0; i < stars.length; i++) {
-    $('.movie-card:last-child li[data-info-type="vote"] i:nth-child('+(i + 1)+')').removeClass('far').addClass('fas');
+    $('.item-card:last-child li[data-info-type="vote"] i:nth-child('+(i + 1)+')').removeClass('far').addClass('fas');
   }
 }
 
@@ -91,7 +107,7 @@ function search() {
     /*empty input*/
     $('.searchbar').val('');
     /*remove any cards already in page*/
-    $('#results-display .movie-card').remove();
+    $('#results-display .item-card').remove();
 
     var moviesUrl = 'https://api.themoviedb.org/3/search/movie';
     var seriesUrl = 'https://api.themoviedb.org/3/search/tv';

@@ -1,13 +1,15 @@
+/* * All lists are in alphabetical order * */
+
+/* * ELEMENTS * */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* * ELEMENTS * */
-
 a {
   color: #fff;
+  text-decoration: none;
 }
 
 body {
@@ -21,17 +23,33 @@ header {
   width: 100%;
   height: 68px;
   position: fixed;
+  background: rgb(20,20,20);
+  background: linear-gradient(0deg, rgba(20,20,20,1) 0%, rgba(6,6,6,1) 100%);
 }
 
 main {
-  padding-top: 68px;
+  padding-top: 148px;
 }
 
 /* * CLASSES * */
 
+.clearfix {
+  content: '';
+  display: table;
+  clear: both;
+}
+
 .container {
-  width: 95%;
+  width: 90%;
   margin: auto;
+}
+
+.float-lx {
+  float: left;
+}
+
+.float-rx {
+  float: right;
 }
 
 .header-left {
@@ -39,7 +57,6 @@ main {
 }
 
 .header-left {
-  float: left;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -57,7 +74,6 @@ main {
 
 .header-right {
   padding-top: 18px;
-  float: right;
   /* background-color: #555; */
   display: flex;
     justify-content: space-between;
@@ -69,15 +85,20 @@ main {
   padding: 0 10px;
   cursor: pointer;
 }
-.movie-card {
+
+.item-card {
   width: 300px;
-  height: 150px;
   padding: 5px;
   margin: 10px 0;
   background-color: #333;
+  text-align: center;
 }
 
-.movie-card li {
+.item-card img {
+  width: 185;
+}
+
+.item-card li {
   list-style-type: none;
 }
 
@@ -91,6 +112,33 @@ main {
 
 .primary-search i {
   font-size: 22px;
+}
+
+.results-display-header {
+  margin-bottom: 20px;
+  /* background-color: blue;*/
+  width: 100%;
+}
+
+.results-display-header-left {
+  /* background-color: purple; */
+  width: 160px;
+  color: #808080;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.results-display-header-right {
+  /* background-color: green; */
+  width: calc(100% - 160px);
+}
+
+.results-display-header-right a {
+  padding: 2px 10px;
+}
+
+.results-display-header-right a:not(:last-of-type) {
+  border-right: 1px solid #808080;
 }
 
 /*TRY FLOATING EVERYTHING IN HEADER-RIGHT?*/
