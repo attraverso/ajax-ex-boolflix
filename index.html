@@ -4,40 +4,77 @@
     <meta charset="utf-8">
     <title>I believe I can Boolflix</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.2/handlebars.min.js"></script>
+    <script src="https://kit.fontawesome.com/cca2e2f8eb.js" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Muli:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="main.js" charset="utf-8"></script>
   </head>
+
   <body>
+    <!-- HEADER -->
     <header>
       <div class="container">
         <div class="header-left">
-          <a href="https://fontmeme.com/netflix-font/"><img src="https://fontmeme.com/permalink/200522/c2afbefb193becb208cc4f7dcf0a14da.png" alt="netflix-font" border="0"></a>
+          <a id="logo-ref" href="https://fontmeme.com/netflix-font/"><img src="https://fontmeme.com/permalink/200522/c2afbefb193becb208cc4f7dcf0a14da.png" alt="netflix-font" border="0"></a>
+          <ul>
+            <li>Home</li>
+            <li>TV Shows</li>
+            <li>Movies</li>
+            <li>Latest</li>
+            <li>My List</li>
+          </ul>
         </div>
         <div class="header-right">
-          <input class="searchbar" type="text">
-          <button class="header-search-btn" type="button" name="button">Search</button>
+          <!-- <div class="primary-search">
+            <i class="fas fa-search"></i>
+            <input class="searchbar" type="text" placeholder="Titles, people, genres">
+          </div> -->
+          <input class="searchbar" type="text" placeholder="Titles, people, genres">
+          <i class="fas fa-search"></i>
+          <a href="#"><i class="fas fa-gift"></i></a>
+          <a href="#"><i class="fas fa-bell"></i></a>
+          <div class="header-right-imgbox">
+            <img src="https://occ-0-728-784.1.nflxso.net/dnm/api/v6/Z-WHgqd_TeJxSuha8aZ5WpyLcX8/AAAABdIXX5D4Abs2Zsu_LkdbJgnZyJzTNMqV7pLsqmEt3wYDfy_sIf2HAThe9dliWIaeVRmOqVzZJzn8ReigmP2kpXU.png?r=318" alt="profile-icon">
+          </div>
+          <!-- <input class="searchbar" type="text">
+          <button class="header-search-btn" type="button" name="button">Search</button> -->
         </div>
       </div>
-
     </header>
+    <!-- HEADER END -->
+
     <main>
       <div class="container">
-        <div id="movies-display">
+        <div id="results-display">
 
         </div>
       </div>
 
+      <!-- HANDLEBARS TEMPLATES -->
       <script id="list-template" type="text/x-handlebars-template">
         <div class="movie-card">
           <ul>
             <li data-info-type="title">Title: {{title}}</li>
             <li data-info-type="original-title">Original title: {{originalTitle}}</li>
             <li data-info-type="language">Language: {{language}}</li>
-            <li data-info-type="vote">Average vote: {{vote}}</li>
+            <li data-info-type="vote">
+              <i class="far fa-star"></i>
+              <i class="far fa-star"></i>
+              <i class="far fa-star"></i>
+              <i class="far fa-star"></i>
+              <i class="far fa-star"></i>
+            </li>
           </ul>
         </div>
+      </script>
+
+      <script id="stars-template" type="text/x-handlebars-template">
+        <i class="{{starClass1}} fa-star"></i>
+        <i class="{{starClass2}} fa-star"></i>
+        <i class="{{starClass3}} fa-star"></i>
+        <i class="{{starClass4}} fa-star"></i>
+        <i class="{{starClass5}} fa-star"></i>
       </script>
     </main>
   </body>

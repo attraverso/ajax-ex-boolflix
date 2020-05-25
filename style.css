@@ -4,21 +4,30 @@
   box-sizing: border-box;
 }
 
+/* * ELEMENTS * */
+
+a {
+  color: #fff;
+}
+
 body {
   background-color: #141414;
   color: #fff;
+  font-family: 'Muli', sans-serif;
+  font-size: 14px;
 }
 
 header {
   width: 100%;
   height: 68px;
   position: fixed;
-  padding-top: 21px;
 }
 
 main {
   padding-top: 68px;
 }
+
+/* * CLASSES * */
 
 .container {
   width: 95%;
@@ -26,17 +35,40 @@ main {
 }
 
 .header-left {
-  float: left;
+  height: 68px;
 }
 
-.header-right {
-  float: right;
+.header-left {
+  float: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .header-left img {
   height: 25px;
 }
 
+.header-left li {
+  height: 25px;
+  display: inline-block;
+  padding: 0 10px;
+}
+
+.header-right {
+  padding-top: 18px;
+  float: right;
+  /* background-color: #555; */
+  display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-right i {
+  font-size: 22px;
+  padding: 0 10px;
+  cursor: pointer;
+}
 .movie-card {
   width: 300px;
   height: 150px;
@@ -49,7 +81,40 @@ main {
   list-style-type: none;
 }
 
-#movies-display {
+.primary-search {
+  /* background-color: purple; */
+  width: 22px;/*250px*/
+  height: 32px;
+  border: none;/*1px solid #fff*/
+  padding: 3px;
+}
+
+.primary-search i {
+  font-size: 22px;
+}
+
+/*TRY FLOATING EVERYTHING IN HEADER-RIGHT?*/
+
+.searchbar {
+  width: 150px;
+  height: 22px;
+  background: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+.searchbar::placeholder {
+  font-size: 12px;
+  color: #fff;
+}
+
+/* * IDs * */
+
+#logo-ref {
+  margin-right: 20px;
+}
+
+#results-display {
   width: 100%;
   display: flex;
   justify-content: space-between;
