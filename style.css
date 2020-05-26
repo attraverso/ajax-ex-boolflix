@@ -96,18 +96,23 @@ main {
   overflow-y: auto;
 }
 
-.item-card-img {
-  display: inline-block;
+.item-card-img.active {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.item-card-img.active,
+.item-card-title.active {
+  display: block;
 }
 
 .item-card-info {
   display: none;
 }
 
-.item-card-img.active {
+.item-card-img,
+.item-card-title {
   display: none;
 }
 
@@ -115,8 +120,16 @@ main {
   display: inline-block;
 }
 
-
-
+.item-card-title {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  background-color: rgba(0,0,0,0.5);
+  padding: 10px;
+  font-weight: 600;
+  font-size: 20px;
+}
 
 .item-card li {
   list-style-type: none;
@@ -138,6 +151,14 @@ main {
   margin-bottom: 20px;
   /* background-color: blue;*/
   width: 100%;
+}
+
+.results-display-header {
+  opacity: 0;
+}
+
+.results-display-header.active {
+  opacity: 1;
 }
 
 .results-display-header-left {
