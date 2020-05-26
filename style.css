@@ -25,6 +25,7 @@ header {
   position: fixed;
   background: rgb(20,20,20);
   background: linear-gradient(0deg, rgba(20,20,20,1) 0%, rgba(6,6,6,1) 100%);
+  z-index: 10;
 }
 
 main {
@@ -111,6 +112,10 @@ main {
   display: none;
 }
 
+.item-card-info li {
+  padding-bottom: 5px;
+}
+
 .item-card-img,
 .item-card-title {
   display: none;
@@ -143,6 +148,16 @@ main {
   padding: 10px;
   font-weight: 600;
   font-size: 20px;
+}
+
+.item-card:hover .item-card-title::after {
+  content: '\f054';
+  font-family: "Font Awesome 5 Free";
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  bottom: 7px;
+  right: 7px;
 }
 
 .item-card li {

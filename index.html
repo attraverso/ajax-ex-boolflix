@@ -67,7 +67,7 @@
 
       <!-- HANDLEBARS TEMPLATES -->
       <script id="list-template" type="text/x-handlebars-template">
-        <div class="item-card">
+        <div class="item-card" data-card-id="{{cardId}}">
           <div class="card-front">
             <img class="item-card-img active" src="{{poster}}" alt="">
             <p class="item-card-noimg">No image available</p>
@@ -86,6 +86,7 @@
                 <i class="far fa-star"></i>
                 <i class="far fa-star"></i>
               </li>
+              <li data-info-type="cast"></li>
               <li data-info-type="overview">{{synopsis}}</li>
             </ul>
           </div>
