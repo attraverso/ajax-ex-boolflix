@@ -41,8 +41,12 @@ function callAjax(searchString, endPoint) {
       'query': searchString,
     },
     'success': function(data) {
-      $('.results-display-header').addClass('active');
-      handleData(data.results);
+      if (data.total_results != 0) {
+        $('.results-display-header').addClass('active');
+        handleData(data.results);
+      } else {
+        $('#error-display').addClass('active');
+      }
     },
     'error': function() {
       alert('Seems like we had a problem retrieving your search.');
@@ -137,6 +141,8 @@ function search() {
     $('.searchbar').val('');
     /*remove any cards already in page*/
     $('#results-display .item-card').remove();
+    /*remove related search terms*/
+    $('.results-display-header').removeClass('active');
 
     callAjax(userSearch, 'search/movie');
     callAjax(userSearch, 'search/tv');

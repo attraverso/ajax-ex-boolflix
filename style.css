@@ -213,6 +213,18 @@ main {
 
 /* * IDs * */
 
+#error-display {
+  display: none;
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  padding-top: 100px;
+}
+
+#error-display.active {
+  display: block;
+}
+
 #logo-ref {
   margin-right: 20px;
 }
