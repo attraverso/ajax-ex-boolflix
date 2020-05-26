@@ -65,22 +65,27 @@
       <!-- HANDLEBARS TEMPLATES -->
       <script id="list-template" type="text/x-handlebars-template">
         <div class="item-card">
-          <img class="item-card-img active" src="{{poster}}" alt="">
-          <p class="item-card-title active">{{title}}</p>
-          <ul class="item-card-info">
-            <li data-info-type="title">{{title}}</li>
-            <li data-info-type="original-title">{{originalTitle}}</li>
-            <li data-info-type="lang-flag"><img src="flags/flag_{{language}}.png"></li>
-            <li data-info-type="language">Language: {{language}}</li>
-            <li data-info-type="vote">
-              <i class="far fa-star"></i>
-              <i class="far fa-star"></i>
-              <i class="far fa-star"></i>
-              <i class="far fa-star"></i>
-              <i class="far fa-star"></i>
-            </li>
-            <li data-info-type="overview">{{synopsis}}</li>
-          </ul>
+          <div class="card-front">
+            <img class="item-card-img active" src="{{poster}}" alt="">
+            <p class="item-card-noimg">No image available</p>
+            <p class="item-card-title active">{{title}}</p>
+          </div>
+          <div class="card-back">
+            <ul class="item-card-info">
+              <li data-info-type="title">{{title}}</li>
+              <li data-info-type="original-title">{{originalTitle}}</li>
+              <li data-info-type="lang-flag"><img src="flags/flag_{{language}}.png"></li>
+              <li data-info-type="language">Language: {{language}}</li>
+              <li data-info-type="vote">
+                <i class="far fa-star"></i>
+                <i class="far fa-star"></i>
+                <i class="far fa-star"></i>
+                <i class="far fa-star"></i>
+                <i class="far fa-star"></i>
+              </li>
+              <li data-info-type="overview">{{synopsis}}</li>
+            </ul>
+          </div>
         </div>
       </script>
   </body>

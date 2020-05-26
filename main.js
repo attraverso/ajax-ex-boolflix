@@ -23,9 +23,10 @@ const img_url = 'https://image.tmdb.org/t/p/';
   /*on click on item-card*/
   $('#results-display').on('click', '.item-card', function() {
     // alert('hello');
-    $(this).children('.item-card-img').toggleClass('active');
-    $(this).children('.item-card-title').toggleClass('active');
-    $(this).children('.item-card-info').toggleClass('active');
+    $(this).find('.item-card-img').toggleClass('active');
+    $(this).find('.item-card-title').toggleClass('active');
+    $(this).find('.item-card-info').toggleClass('active');
+    $(this).find('.item-card-noimg').toggleClass('active');
   })
 
 /* * FUNCTIONS - alphabetical order * */
@@ -57,21 +58,24 @@ function handleData(resultsArray) {
     noDuplicateTitle(currentMovie);
     keepFlagIfAvaliable(currentMovie);
     printFullStars(currentMovie.vote_average);
-    noEmptyCards(currentMovie);
+    manageEmptyCards(currentMovie);
   }
 };
+
+/*MANAGE-EMPTY-CARDS - if a card has no backdrop, remove it entirely*/
+function manageEmptyCards(item) {
+  if (item.backdrop_path == null) {
+    $('.item-card:last-child img').remove();
+    $('.item-card:last-child .item-card-noimg').addClass('active');
+  } else {
+    $('.item-card:last-child .item-card-noimg').remove();
+  }
+}
 
 /*NO-DUPLICATE-TITLE - if the title and original title are the same, show only title*/
 function noDuplicateTitle(item) {
   if (item.title != undefined && (item.title == item.original_title) || item.name != undefined && (item.name == item.original_name)) {
     $('.item-card:last-child li[data-info-type="original-title"]').remove();
-  }
-}
-
-/*NO-EMPTY-CARDS - if a card has no backdrop, remove it entirely*/
-function noEmptyCards(item) {
-  if (item.backdrop_path == null) {
-    $('.item-card:last-child').remove();
   }
 }
 

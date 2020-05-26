@@ -120,6 +120,20 @@ main {
   display: inline-block;
 }
 
+.item-card-noimg {
+  visibility: hidden;
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.item-card-noimg.active {
+  visibility: visible;
+}
+
 .item-card-title {
   position: absolute;
   bottom: 0;
