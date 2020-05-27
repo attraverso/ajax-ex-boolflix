@@ -95,6 +95,8 @@ main {
   text-align: center;
   position: relative;
   overflow-y: auto;
+  scrollbar-color: #808080 #303030;
+  scrollbar-width: thin;
 }
 
 .item-card-img.active {
@@ -113,7 +115,13 @@ main {
 }
 
 .item-card-info li {
+  padding-right: 3px;
   padding-bottom: 5px;
+}
+
+.item-card-info li[data-info-type="cast"] {
+  border-bottom: 1px solid #808080;
+  margin: 10px 0;
 }
 
 .item-card-img,
