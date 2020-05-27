@@ -19,8 +19,12 @@
           <a id="logo-ref" href="https://fontmeme.com/netflix-font/"><img src="https://fontmeme.com/permalink/200522/c2afbefb193becb208cc4f7dcf0a14da.png" alt="netflix-font" border="0"></a>
           <ul>
             <li>Home</li>
-            <li>TV Shows</li>
-            <li>Movies</li>
+            <li class="dropdown-hook">TV Shows
+              <ul class="dropdown dd-tv"></ul>
+            </li>
+            <li class="dropdown-hook">Movies
+              <ul class="dropdown dd-movies"></ul>
+            </li>
             <li>Latest</li>
             <li>My List</li>
           </ul>
@@ -92,6 +96,10 @@
             </ul>
           </div>
         </div>
+      </script>
+
+      <script id="select-template" type="text/x-handlebars-template">
+        <li data-dd-item="{{genreLow}}">{{genre}}</li>
       </script>
   </body>
 </html>

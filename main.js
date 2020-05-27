@@ -10,6 +10,8 @@ const img_url = 'https://image.tmdb.org/t/p/';
 /*compile template*/
 var listTemplateSource = $('#list-template').html();
 var listTemplate = Handlebars.compile(listTemplateSource);
+var selectTemplateSource = $('#select-template').html();
+var selectTemplate = Handlebars.compile(selectTemplateSource);
 
 /*grab all tv and movie genres and store them for later use*/
 var tvGenres = [];
@@ -28,6 +30,39 @@ $('.searchbar').keypress(function(event) {
 
 /*on click on search button, start search*/
 $('.header-right .fa-search').click(search);
+
+/*on click on tv/movies, show genres selection dropdown. hide on mouseleave*/
+$('.dropdown-hook').click(function() {
+  $(this).children('.dropdown').toggleClass('active');
+  // $(this).siblings('.dropdown-hook').children('.dropdown').toggleClass('active');
+}).mouseleave(function() {
+  $(this).children('.dropdown').removeClass('active');
+})
+$('.dropdown').mouseleave(function() {
+  $(this).removeClass('active');
+})
+
+/*on click on dropdown item, leave on page only the cards of matching genre*/
+$('.dropdown').on('click', 'li', function() {
+  var lookFor = $(this).text();
+  console.log(lookFor);
+  $('.item-card').each(function() {
+    var currentGenres = $(this).find('li[data-info-type="genres"]').text();
+    console.log(currentGenres);
+    if (!currentGenres.includes(lookFor)) {
+      $(this).remove();
+    }
+  })
+  // filterCards(lookFor);
+})
+
+// function filterCards(genre) {
+//   $('.item-card').each(function() {
+//     var currentGenres = $(this).find('li[data-info-type="genres"]').text();
+//     console.log(currentGenres);
+//
+//   })
+// }
 
 /*on click on an item-card, show the back of the card. On mouseleave, show the front*/
 $('#results-display').on('click', '.item-card', function() {
@@ -56,6 +91,16 @@ function getMovieGenres(endpoint) {
     'success': function(data) {
       movieGenres = data.genres;
       /*** perché se faccio array.push(data.genres) mi mette dentro ogni singolo oggetto più tutto l'array completo?***/
+      for (var i = 0; i < movieGenres.length; i++) {
+        var currentGenre = movieGenres[i].name;
+        var currentLowGenre = currentGenre.toLowerCase();
+        var context = {
+          'genreLow': currentLowGenre,
+          'genre': currentGenre,
+        }
+        var html = selectTemplate(context);
+        $('.dd-movies').append(html);
+      }
     },
     'error': function() {
       console.log('ajax error');
@@ -72,6 +117,17 @@ function getTvGenres(endpoint) {
     },
     'success': function(data) {
       tvGenres = data.genres;
+      /*get the name of every genre and print it in page*/
+      for (var i = 0; i < tvGenres.length; i++) {
+        var currentGenre = tvGenres[i].name;
+        var currentLowGenre = currentGenre.toLowerCase();
+        var context = {
+          'genreLow': currentLowGenre,
+          'genre': currentGenre,
+        }
+        var html = selectTemplate(context);
+        $('.dd-tv').append(html);
+      }
       /*** perché se faccio array.push(data.genres) mi mette dentro ogni singolo oggetto più tutto l'array completo?***/
     },
     'error': function() {
