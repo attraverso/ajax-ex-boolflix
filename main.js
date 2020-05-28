@@ -95,16 +95,16 @@ $('#results-display').on('click', '.item-card', function() {
   $(this).find('.item-card-noimg').addClass('active');
 });
 
+/*when the user picks a page from the pagination select*/
 $('.page-select').on('click', 'option', function() {
+  /*grab current search term from search sentry*/
   var currentSearch = $('.searchbar').attr('data-search-sentry');
-  console.log(currentSearch);
+  /*grab the requested page number*/
   var requestedPage = $(this).val();
-  console.log(requestedPage);
+  /*reset all the fields affected by a search*/
   cleanSlate(currentSearch);
   callAjax(currentSearch, 'search/movie', 'movie', requestedPage);
   callAjax(currentSearch, 'search/tv', 'series', requestedPage);
-  /*ajax call asking for a specific page?*/
-
 });
 
 /* * FUNCTIONS - ORDER OF APPEARANCE * */
@@ -270,7 +270,7 @@ function handleDataResults(resultsArray, cardType) {
     printTalentList(currentItem, cardType);
     noDuplicateTitle(currentItem);
     keepFlagIfAvaliable(currentItem);
-    printFullStars(currentItem.vote_average);
+    fillStarsAlt(currentItem.vote_average);
     manageEmptyCards(currentItem);
   }
 };
@@ -402,7 +402,7 @@ function keepFlagIfAvaliable(forItem) {
 };
 
 /*PRINT-FULL-STARS - get average vote, fit to scale of 5, fill stars in html according to average vote*/
-function printFullStars(voteAverage) {
+function fillStars(voteAverage) {
   /*make the average vote a rounded number from 1 to 5*/
   var starsNr = Math.round(voteAverage / 2);
   /*grab the first x empty stars based on starsNr value*/
@@ -410,6 +410,25 @@ function printFullStars(voteAverage) {
   for (var i = 1; i <= starsNr; i++) {
     /*grab all those stars and make them full*/
     $('.item-card:last-child li[data-info-type="vote"] i:nth-child('+(i)+')').removeClass('far').addClass('fas');
+  }
+}
+
+function fillStarsAlt(voteAverage) {
+  var base5Vote = (voteAverage / 2).toString();
+  console.log(base5Vote);
+  base5VoteElements = base5Vote.split('.');
+  console.log(base5VoteElements);
+  if (base5VoteElements[1] < 10) {
+    base5VoteElements[1] = base5VoteElements[1] + '0';
+    console.log('after: ' + base5VoteElements);
+  }
+  /*grab the first x empty stars based on starsNr value*/
+  for (var i = 1; i <= base5VoteElements[0]; i++) {
+    /*grab all those stars and make them full*/
+    $('.item-card:last-child li[data-info-type="vote"] i:nth-child('+(i)+')').removeClass('far').addClass('fas');
+  }
+  if (base5VoteElements[1] > 50) {
+    $('.item-card:last-child li[data-info-type="vote"] i:nth-child('+(i)+')').attr('class', '').attr('class', 'fas fa-star-half-alt')
   }
 }
 
