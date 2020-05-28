@@ -12,6 +12,8 @@ var listTemplateSource = $('#list-template').html();
 var listTemplate = Handlebars.compile(listTemplateSource);
 var selectTemplateSource = $('#select-template').html();
 var selectTemplate = Handlebars.compile(selectTemplateSource);
+var paginationTemplateSource = $('#pagination-template').html();
+var paginationTemplate = Handlebars.compile(paginationTemplateSource);
 
 /*grab all tv and movie genres and store them for later use*/
 var tvGenres = [];
@@ -71,6 +73,7 @@ $('.dropdown').on('click', 'li', function() {
   // filterCards(lookFor);
 })
 
+/*** currently failed attempt at putting all this in a function***/
 // function filterCards(genre) {
 //   $('.item-card').each(function() {
 //     var currentGenres = $(this).find('li[data-info-type="genres"]').text();
@@ -90,6 +93,18 @@ $('#results-display').on('click', '.item-card', function() {
   $(this).find('.item-card-title').addClass('active');
   $(this).find('.item-card-info').removeClass('active');
   $(this).find('.item-card-noimg').addClass('active');
+});
+
+$('.page-select').on('click', 'option', function() {
+  var currentSearch = $('.searchbar').attr('data-search-sentry');
+  console.log(currentSearch);
+  var requestedPage = $(this).val();
+  console.log(requestedPage);
+  cleanSlate(currentSearch);
+  callAjax(currentSearch, 'search/movie', 'movie', requestedPage);
+  callAjax(currentSearch, 'search/tv', 'series', requestedPage);
+  /*ajax call asking for a specific page?*/
+
 });
 
 /* * FUNCTIONS - ORDER OF APPEARANCE * */
@@ -155,34 +170,53 @@ function search() {
   var userSearch = $('.searchbar').val().trim();
   /*if the string isn't empty*/
   if (userSearch.length > 1) {
-    /*empty input*/
-    $('.searchbar').val('');
-    /*remove any cards already in page*/
-    $('#results-display .item-card').remove();
-    /*remove related search terms*/
-    $('.results-display-header').removeClass('active');
+    /*reset everything related to the search*/
+    cleanSlate(userSearch);
     /*get results for both movies and tv shows*/
     callAjax(userSearch, 'search/movie', 'movie');
     callAjax(userSearch, 'search/tv', 'series');
   }
 };
 
+function cleanSlate(currentSearch) {
+  $('.searchbar').val('');
+  /*remove any cards already in page*/
+  $('#results-display .item-card').remove();
+  /*remove any option from pagination select*/
+  $('.header-right option').remove();
+  $('#results-display').attr('data-movie-pages', '');
+  $('#results-display').attr('data-tv-pages', '');
+  /*remove related search terms*/
+  $('.results-display-header').removeClass('active');
+  /*remove warning after empty search*/
+  $('#error-display').removeClass('active');
+  /*create sentry for calling ajax to get the following pages*/
+  $('.searchbar').attr('data-search-sentry', currentSearch);
+}
+
 /**CALL-AJAX - call the TMD API via ajax**/
-function callAjax(searchString, endPoint, cardType) {
+function callAjax(searchString, endPoint, cardType, pageNr) {
   $.ajax({
     'url': api_url + endPoint,
     'method': 'get',
     'data': {
       'api_key': api_key,
       'query': searchString,
+      'page': pageNr,
     },
     'success': function(data) {
       /*if the search returns anything at all*/
       if (data.total_results != 0) {
         /*show related terms bar*/
         $('.results-display-header').addClass('active');
-        /*handle the data*/
-        handleData(data.results, cardType);
+
+        /***pagination attempt***/
+        /*get total number of pages for the current call*/
+        setupPagination(data, cardType);
+         /***pagination attempt - end***/
+
+        /*handle the info in data.results*/
+        handleDataResults(data.results, cardType);
       /* if the search returns nothing, tell the user*/
       } else {
         $('#error-display').addClass('active');
@@ -194,8 +228,41 @@ function callAjax(searchString, endPoint, cardType) {
   })/*ajax end*/
 }
 
+
+function setupPagination(data, cardType) {
+  var pages = data.total_pages;
+  /*create sentries for both movies and tv shows with total page nr*/
+  if (cardType == 'movie') {
+    $('#results-display').attr('data-movie-pages', pages);
+  } else if (cardType == 'series') {
+    $('#results-display').attr('data-tv-pages', pages);
+  }
+  var movieSentry = $('#results-display').attr('data-movie-pages');
+  var tvSentry = $('#results-display').attr('data-tv-pages');
+  /*don't act on the first call, where one of the two sentries is still empty*/
+  if (movieSentry != '' && tvSentry != '') {
+    /*learn which media type gets more results, then use the bigger number to create as many select options*/
+    if (movieSentry > tvSentry) {
+      printPageNrOptions(movieSentry);
+    } else if (tvSentry > movieSentry) {
+      printPageNrOptions(tvSentry);
+    }
+  }
+}
+
+/*PRINT-PAGE-NR-OPTIONS - generate as many options in the pagination select as needed*/
+function printPageNrOptions(howMany) {
+  for (var i = 1; i <= howMany; i++) {
+    var context = {
+      'pageNr': i,
+    }
+    var html = paginationTemplate(context);
+    $('.page-select').append(html);
+  }
+}
+
 /*HANDLE-DATA - cycle every object in the result of your query*/
-function handleData(resultsArray, cardType) {
+function handleDataResults(resultsArray, cardType) {
   /*for every object returned by the call*/
   for (var i = 0; i < resultsArray.length; i++) {
     var currentItem = resultsArray[i];
