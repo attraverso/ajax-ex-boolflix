@@ -38,15 +38,14 @@ $('.searchbar-cross').click(function() {
 })
 
 /*on mousedown on search icon, if the input is displayed, start search*/
-$('.header-right .fa-search').mousedown(function(){
+$('.header-right .fa-search').click(function(){
   if ($('.searchbar').hasClass('active')) {
     $('.header-right .fa-search').click(search);
+  } else {
+    $('.searchbar').addClass('active');
+    $('.searchbar').focus();
   }
-  /*if it's not, show input*/
-}).click(function() {
-  $('.searchbar').addClass('active');
-  $('.searchbar').focus();
-});
+})
 
 /*on click on tv/movies in header-left, show genres selection dropdown. hide on mouseleave*/
 $('.dropdown-hook').click(function() {
@@ -122,7 +121,6 @@ function getMovieGenres(endpoint) {
     },
   });
 }
-
 /*grab all tv genres from TMD*/
 function getTvGenres(endpoint) {
   $.ajax({
@@ -227,14 +225,12 @@ function printMovieDetails(item, cardType) {
   }
   /*grab current item's genre id(s)*/
   itemGenreIds = item.genre_ids;
-
   /*convert id(s) into name(s), based on item's media type*/
   if (cardType == 'movie') {
     var finalGenres = getGenresNames(movieGenres, itemGenreIds, item)
   } else if (cardType = 'series') {
     finalGenres = getGenresNames(tvGenres, itemGenreIds, item)
   }
-
   /*populate template*/
   var context = {
     'title': itemTitle,
@@ -254,11 +250,9 @@ function printMovieDetails(item, cardType) {
 function getGenresNames(array, genreIds, item) {
   var itemId = item.id;
   var currentGenres = '';
-
   /*go through the item's genre ids and grab one at a time*/
   for (var i = 0; i < genreIds.length; i++) {
     var currentGenId = genreIds[i];
-
     /*go through all the genres for that media type, if there's a match, print the name*/
     for (var n = 0; n < movieGenres.length; n++) {
       if (currentGenId == movieGenres[n].id) {
@@ -345,7 +339,7 @@ function printFullStars(voteAverage) {
   /*make the average vote a rounded number from 1 to 5*/
   var starsNr = Math.round(voteAverage / 2);
   /*grab the first x empty stars based on starsNr value*/
-  // var stars = $('.item-card:last-child li[data-info-type="vote"] i').slice(0, starsNr);/*** questa la lasciamo a imperitura memoria perché PORCODDUE (ma ci vorrebbe pure lo stars.length sotto)***/
+  // var stars = $('.item-card:last-child li[data-info-type="vote"] i').slice(0, starsNr);/*** questa la lasciamo a imperitura memoria perché LAMISERIA (ma ci vorrebbe pure lo stars.length sotto)***/
   for (var i = 1; i <= starsNr; i++) {
     /*grab all those stars and make them full*/
     $('.item-card:last-child li[data-info-type="vote"] i:nth-child('+(i)+')').removeClass('far').addClass('fas');
