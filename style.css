@@ -282,16 +282,39 @@ main {
 /*TRY FLOATING EVERYTHING IN HEADER-RIGHT?*/
 
 .searchbar {
-  width: 150px;
+  width: 0px;
   height: 22px;
   background: transparent;
   color: #fff;
+  border: none;
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
+  position: relative;
+}
+
+.searchbar.active {
+  width: 200px;
   border: 1px solid #fff;
 }
 
 .searchbar::placeholder {
   font-size: 12px;
   color: #fff;
+}
+
+.searchbar-cross {
+  position: absolute;
+  bottom: 22px;
+  right: 228px;
+  visibility: hidden;
+}
+
+.searchbar-cross.active {
+  visibility: visible;
+}
+
+.searchbar-cross .fa-times {
+  font-size: 18px;
 }
 
 /* * IDs * */

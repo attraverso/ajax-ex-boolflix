@@ -29,7 +29,16 @@ $('.searchbar').keypress(function(event) {
 });
 
 /*on click on search button, start search*/
-$('.header-right .fa-search').click(search);
+
+$('.header-right .fa-search').click(function() {
+  $('.searchbar').addClass('active');
+  $('.searchbar-cross').addClass('active');
+}).click(search);
+
+$('.searchbar-cross').click(function() {
+  $('.searchbar').removeClass('active');
+  $('.searchbar-cross').removeClass('active');
+})
 
 /*on click on tv/movies, show genres selection dropdown. hide on mouseleave*/
 $('.dropdown-hook').click(function() {
@@ -74,7 +83,7 @@ $('#results-display').on('click', '.item-card', function() {
   $(this).find('.item-card-img').addClass('active');
   $(this).find('.item-card-title').addClass('active');
   $(this).find('.item-card-info').removeClass('active');
-  $(this).find('.item-card-noimg').removeClass('active');
+  // $(this).find('.item-card-noimg').removeClass('active');
 });
 
 /* * FUNCTIONS - ORDER OF APPEARANCE * */
