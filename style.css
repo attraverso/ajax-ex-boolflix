@@ -45,6 +45,8 @@ main {
   margin: auto;
 }
 
+/* dropdown items in header-left */
+
 .dropdown {
   width: 140px;
   position: absolute;
@@ -72,6 +74,11 @@ main {
   background-color: #303030;
 }
 
+.dropdown li:last-child {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #404040;
+}
+
 .dropdown-hook {
   position: relative;
   cursor: pointer;
@@ -89,6 +96,8 @@ main {
   right: 2px;
 }
 
+/* dropdown items end */
+
 .float-lx {
   float: left;
 }
@@ -96,6 +105,8 @@ main {
 .float-rx {
   float: right;
 }
+
+/* header */
 
 .header-left {
   height: 68px;
@@ -130,21 +141,44 @@ main {
     align-items: center;
 }
 
+.header-right-imgbox {
+  padding-left: 10px;
+}
+
 .header-right i {
   font-size: 22px;
   padding: 0 10px;
   cursor: pointer;
 }
+/* header end */
+
+/* movie/series cards in #results-display */
 
 .item-card {
   width: 300px;
   height: 169px;
-  margin: 10px 0;
+  margin-bottom: 60px;
   text-align: center;
   position: relative;
   overflow-y: auto;
   scrollbar-color: #808080 #303030;
   scrollbar-width: thin;
+}
+
+/* make card get bigger on hover */
+/* .item-card:hover {
+  transition-duration: 1s;
+  transform: scale(1.3, 1.3);
+} */
+
+.item-card:hover .item-card-title::after {
+  content: '\f054';
+  font-family: "Font Awesome 5 Free";
+  font-size: 22px;
+  font-weight: bold;
+  position: absolute;
+  bottom: 10px;
+  right: 7px;
 }
 
  .item-card::-webkit-scrollbar {
@@ -218,22 +252,12 @@ main {
   font-size: 20px;
 }
 
-.item-card:hover .item-card-title::after {
-  content: '\f054';
-  font-family: "Font Awesome 5 Free";
-  font-size: 28px;
-  font-weight: bold;
-  position: absolute;
-  bottom: 7px;
-  right: 7px;
-}
-
 .item-card li {
   list-style-type: none;
 }
+/* item card end */
 
 .primary-search {
-  /* background-color: purple; */
   width: 22px;/*250px*/
   height: 32px;
   border: none;/*1px solid #fff*/
@@ -244,9 +268,9 @@ main {
   font-size: 22px;
 }
 
+/* related searches bar */
 .results-display-header {
-  margin-bottom: 20px;
-  /* background-color: blue;*/
+  margin-bottom: 30px;
   width: 100%;
 }
 
@@ -259,7 +283,6 @@ main {
 }
 
 .results-display-header-left {
-  /* background-color: purple; */
   width: 160px;
   color: #808080;
   font-size: 14px;
@@ -267,7 +290,6 @@ main {
 }
 
 .results-display-header-right {
-  /* background-color: green; */
   width: calc(100% - 160px);
 }
 
@@ -278,9 +300,9 @@ main {
 .results-display-header-right a:not(:last-of-type) {
   border-right: 1px solid #808080;
 }
+/* related searches bar end*/
 
-/*TRY FLOATING EVERYTHING IN HEADER-RIGHT?*/
-
+/***TRY FLOATING EVERYTHING IN HEADER-RIGHT?***/
 .searchbar {
   width: 0px;
   height: 22px;
@@ -305,7 +327,7 @@ main {
 .searchbar-cross {
   position: absolute;
   bottom: 22px;
-  right: 228px;
+  right: 238px;
   visibility: hidden;
 }
 

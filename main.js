@@ -25,25 +25,32 @@ getMovieGenres(movieGenresEndpoint);
 $('.searchbar').keypress(function(event) {
   if (event.which == 13) {
     search();
+  } else {
+    $('.searchbar-cross').addClass('active');
   }
 });
 
-/*on click on search button, start search*/
-
-$('.header-right .fa-search').click(function() {
-  $('.searchbar').addClass('active');
-  $('.searchbar-cross').addClass('active');
-}).click(search);
-
+/*on click on searchbar cross, hide searchbar*/
 $('.searchbar-cross').click(function() {
+  $('.searchbar').val('');
   $('.searchbar').removeClass('active');
   $('.searchbar-cross').removeClass('active');
 })
 
-/*on click on tv/movies, show genres selection dropdown. hide on mouseleave*/
+/*on mousedown on search icon, if the input is displayed, start search*/
+$('.header-right .fa-search').mousedown(function(){
+  if ($('.searchbar').hasClass('active')) {
+    $('.header-right .fa-search').click(search);
+  }
+  /*if it's not, show input*/
+}).click(function() {
+  $('.searchbar').addClass('active');
+  $('.searchbar').focus();
+});
+
+/*on click on tv/movies in header-left, show genres selection dropdown. hide on mouseleave*/
 $('.dropdown-hook').click(function() {
   $(this).children('.dropdown').toggleClass('active');
-  // $(this).siblings('.dropdown-hook').children('.dropdown').toggleClass('active');
 }).mouseleave(function() {
   $(this).children('.dropdown').removeClass('active');
 })
@@ -75,27 +82,26 @@ $('.dropdown').on('click', 'li', function() {
 
 /*on click on an item-card, show the back of the card. On mouseleave, show the front*/
 $('#results-display').on('click', '.item-card', function() {
-  $(this).find('.item-card-img').toggleClass('active');
-  $(this).find('.item-card-title').toggleClass('active');
-  $(this).find('.item-card-info').toggleClass('active');
-  $(this).find('.item-card-noimg').toggleClass('active');
+  $(this).find('.item-card-img').removeClass('active');
+  $(this).find('.item-card-title').removeClass('active');
+  $(this).find('.item-card-info').addClass('active');
+  $(this).find('.item-card-noimg').removeClass('active');
 }).on('mouseleave', '.item-card', function() {
   $(this).find('.item-card-img').addClass('active');
   $(this).find('.item-card-title').addClass('active');
   $(this).find('.item-card-info').removeClass('active');
-  // $(this).find('.item-card-noimg').removeClass('active');
+  $(this).find('.item-card-noimg').addClass('active');
 });
 
 /* * FUNCTIONS - ORDER OF APPEARANCE * */
 
-/*grab all tv and movie genres from TMD*/
+/*grab all movie genres from TMD*/
 function getMovieGenres(endpoint) {
   $.ajax({
     'url': api_url + endpoint,
     'method': 'get',
     'data': {
       'api_key': api_key,
-      'query': null,/***do I need this? it works anyway***/
     },
     'success': function(data) {
       movieGenres = data.genres;
@@ -116,13 +122,14 @@ function getMovieGenres(endpoint) {
     },
   });
 }
+
+/*grab all tv genres from TMD*/
 function getTvGenres(endpoint) {
   $.ajax({
     'url': api_url + endpoint,
     'method': 'get',
     'data': {
       'api_key': api_key,
-      'query': null,/***do I need this? it works anyway***/
     },
     'success': function(data) {
       tvGenres = data.genres;
@@ -137,7 +144,6 @@ function getTvGenres(endpoint) {
         var html = selectTemplate(context);
         $('.dd-tv').append(html);
       }
-      /*** perché se faccio array.push(data.genres) mi mette dentro ogni singolo oggetto più tutto l'array completo?***/
     },
     'error': function() {
       console.log('ajax error');
@@ -189,25 +195,6 @@ function callAjax(searchString, endPoint, cardType) {
     }
   })/*ajax end*/
 }
-
-function getGenresNames(array, genreIds, item) {
-  var itemId = item.id;
-  var currentGenres = '';
-
-  /*go through the item's genre ids and grab one at a time*/
-  for (var i = 0; i < genreIds.length; i++) {
-    var currentGenId = genreIds[i];
-
-    /*go through all the genres for that media type, if there's a match, print the name*/
-    for (var n = 0; n < movieGenres.length; n++) {
-      if (currentGenId == movieGenres[n].id) {
-      currentGenres += (array[n].name+ ', ');
-      }
-    }
-  }
-  return currentGenres;
-}
-
 
 /*HANDLE-DATA - cycle every object in the result of your query*/
 function handleData(resultsArray, cardType) {
@@ -263,6 +250,25 @@ function printMovieDetails(item, cardType) {
   $('#results-display').append(html);
 }
 
+/* GET-GENRES-NAMES - given an item's genre ids, get the corresponding names instead*/
+function getGenresNames(array, genreIds, item) {
+  var itemId = item.id;
+  var currentGenres = '';
+
+  /*go through the item's genre ids and grab one at a time*/
+  for (var i = 0; i < genreIds.length; i++) {
+    var currentGenId = genreIds[i];
+
+    /*go through all the genres for that media type, if there's a match, print the name*/
+    for (var n = 0; n < movieGenres.length; n++) {
+      if (currentGenId == movieGenres[n].id) {
+      currentGenres += (array[n].name+ ', ');
+      }
+    }
+  }
+  return currentGenres;
+}
+
 /* PRINT-TALENT-LIST*/
 function printTalentList(item, cardType) {
   /*grab the id of the current item*/
@@ -310,7 +316,7 @@ function printTalentList(item, cardType) {
   })/*ajax end*/
 }
 
-/*NO-DUPLICATE-TITLE - if the title and original title are the same, show only title*/
+/*NO-DUPLICATE-TITLE - if the title and original title are the same, show only the title*/
 function noDuplicateTitle(item) {
   /*if title and original titles are equal, and neither is undefined*/
   if (item.title != undefined && (item.title == item.original_title) || item.name != undefined && (item.name == item.original_name)) {
