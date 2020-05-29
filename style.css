@@ -46,7 +46,6 @@ main {
 }
 
 /* dropdown items in header-left */
-
 .dropdown {
   width: 140px;
   position: absolute;
@@ -230,6 +229,8 @@ main {
 
 .item-card-info.active {
   display: inline-block;
+  min-width: 290px;
+  min-height: 159px;
 }
 
 .item-card-noimg {
@@ -260,8 +261,32 @@ main {
 .item-card li {
   list-style-type: none;
 }
-
 /* item card end */
+
+.page-select {
+  background-color: inherit;
+  color: inherit;
+}
+
+.page-select option {
+  background-color: #141414;
+  color: #fff;
+}
+
+.page-select option:focus {
+  background-color: #303030;
+  color: #fff;
+}
+
+.pagination-container {
+  margin-bottom: 50px;
+  color: #808080;
+  display: none;
+}
+
+.pagination-container.active {
+  display: block;
+}
 
 .primary-search {
   width: 22px;/*250px*/
@@ -276,7 +301,7 @@ main {
 
 /* related searches bar */
 .results-display-header {
-  margin-bottom: 50px;
+  margin-bottom: 20px;
   width: 100%;
 }
 

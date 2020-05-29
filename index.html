@@ -30,11 +30,11 @@
           </ul>
         </div>
         <div class="header-right float-rx">
-          <!-- <div class="primary-search">
+          <!-- ATTEMPT AT NETFLIX SEARCHBAR EFFECT <div class="primary-search">
             <i class="fas fa-search"></i>
             <input class="searchbar" type="text" placeholder="Titles, people, genres">
           </div> -->
-          <select class="page-select" name=""></select>
+          <!-- <select class="page-select" name=""></select> GET RID OF THIS-->
           <input class="searchbar" type="text" placeholder=" Movies, TV shows">
           <div class="searchbar-cross"><i class="fas fa-times"></i></div>
           <i class="fas fa-search"></i>
@@ -59,6 +59,10 @@
             <a href="#">Related Search 2</a>
             <a href="#">Related Search 3</a>
           </div>
+        </div>
+        <div class="pagination-container">
+          <span>Jump to page:</span>
+          <select class="page-select" name=""></select>
         </div>
         <div id="results-display"></div>
         <div id="error-display">
@@ -88,6 +92,7 @@
                 <i class="far fa-star"></i>
                 <i class="far fa-star"></i>
               </li>
+              <li data-info-type="voteNA"><i class="fas fa-plus-circle"></i></li>
               <li data-info-type="genres">{{genres}}</li>
               <li data-info-type="cast"></li>
               <li data-info-type="overview">{{synopsis}}</li>
