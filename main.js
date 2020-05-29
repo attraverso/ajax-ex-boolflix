@@ -61,7 +61,7 @@ $('.dropdown').mouseleave(function() {
 
 /*on click on dropdown item, leave on page only the cards of matching genre*/
 $('.dropdown').on('click', 'li', function() {
-
+  $('.item-card').show();
   var lookFor = $(this).text();
   console.log(lookFor);
   $('.item-card').each(function() {
