@@ -39,7 +39,7 @@ $('.searchbar-cross').click(function() {
   $('.searchbar-cross').removeClass('active');
 })
 
-/*on mousedown on search icon, if the input is displayed, start search*/
+/*on click on search icon, if the input is displayed, start search*/
 $('.header-right .fa-search').click(function(){
   if ($('.searchbar').hasClass('active')) {
     $('.header-right .fa-search').click(search);
@@ -61,13 +61,14 @@ $('.dropdown').mouseleave(function() {
 
 /*on click on dropdown item, leave on page only the cards of matching genre*/
 $('.dropdown').on('click', 'li', function() {
+
   var lookFor = $(this).text();
   console.log(lookFor);
   $('.item-card').each(function() {
     var currentGenres = $(this).find('li[data-info-type="genres"]').text();
     console.log(currentGenres);
     if (!currentGenres.includes(lookFor)) {
-      $(this).remove();
+      $(this).hide();
     }
   })
   // filterCards(lookFor);
@@ -213,7 +214,7 @@ function callAjax(searchString, endPoint, cardType, pageNr) {
         /*show related terms bar*/
         $('.results-display-header').addClass('active');
         /*get total number of pages for the current call*/
-        setupPagination(data, cardType);
+        setupPagination(data.total_pages, cardType);
         /*handle the info in data.results*/
         handleDataResults(data.results, cardType);
       /* if the search returns nothing, tell the user*/
@@ -228,20 +229,19 @@ function callAjax(searchString, endPoint, cardType, pageNr) {
 }
 
 /*SETUP-PAGINATION - get the total number of pg per media type and compare them by setting up sentries, then print the options in page*/
-function setupPagination(data, cardType) {
-  var pages = data.total_pages;
+function setupPagination(totalPages, cardType) {
   /*create sentries for both movies and tv shows with total page nr*/
   if (cardType == 'movie') {
-    $('#results-display').attr('data-movie-pages', pages);
+    $('#results-display').attr('data-movie-pages', totalPages);
   } else if (cardType == 'series') {
-    $('#results-display').attr('data-tv-pages', pages);
+    $('#results-display').attr('data-tv-pages', totalPages);
   }
   var movieSentry = $('#results-display').attr('data-movie-pages');
   var tvSentry = $('#results-display').attr('data-tv-pages');
   /*don't act on the first call, where one of the two sentries is still empty*/
   if (movieSentry != '' && tvSentry != '') {
     /*learn which media type gets more results, then use the bigger number to create as many select options*/
-    if (movieSentry > tvSentry) {
+    if (movieSentry >= tvSentry) {
       printPageNrOptions(movieSentry);
     } else if (tvSentry > movieSentry) {
       printPageNrOptions(tvSentry);
@@ -267,16 +267,16 @@ function handleDataResults(resultsArray, cardType) {
   for (var i = 0; i < resultsArray.length; i++) {
     var currentItem = resultsArray[i];
     printMovieDetails(currentItem, cardType);
-    printTalentList(currentItem, cardType);
+    printTalentList(currentItem.id, cardType);
     noDuplicateTitle(currentItem);
-    keepFlagIfAvaliable(currentItem);
+    keepFlagIfAvaliable(currentItem.original_language, currentItem.id);
     if (currentItem.vote_average != 0) {
       $('.item-card:last-child li[data-info-type="voteNA"]').remove();
-      fillStars(currentItem.vote_average);
+      fillStars(currentItem.vote_average, currentItem.id);
     } else {
       $('.item-card:last-child li[data-info-type="vote"]').remove();
     }
-    manageEmptyCards(currentItem);
+    manageEmptyCards(currentItem.backdrop_path, currentItem.id);
   }
 };
 
@@ -299,9 +299,9 @@ function printMovieDetails(item, cardType) {
   itemGenreIds = item.genre_ids;
   /*convert id(s) into name(s), based on item's media type*/
   if (cardType == 'movie') {
-    var finalGenres = getGenresNames(movieGenres, itemGenreIds, item)
+    var finalGenres = getGenresNames(movieGenres, itemGenreIds)
   } else if (cardType = 'series') {
-    finalGenres = getGenresNames(tvGenres, itemGenreIds, item)
+    finalGenres = getGenresNames(tvGenres, itemGenreIds)
   }
   /*populate template*/
   var context = {
@@ -319,27 +319,24 @@ function printMovieDetails(item, cardType) {
 }
 
 /* GET-GENRES-NAMES - given an item's genre ids, get the corresponding names instead*/
-function getGenresNames(array, genreIds, item) {
-  var itemId = item.id;
+function getGenresNames(mediaArray, itemGenreIds) {
   var currentGenres = '';
   /*go through the item's genre ids and grab one at a time*/
-  for (var i = 0; i < genreIds.length; i++) {
-    var currentGenId = genreIds[i];
+  for (var i = 0; i < itemGenreIds.length; i++) {
+    var currentGenId = itemGenreIds[i];
     /*go through all the genres for that media type, if there's a match, print the name*/
-    for (var n = 0; n < movieGenres.length; n++) {
-      if (currentGenId == movieGenres[n].id) {
-      currentGenres += (array[n].name+ ', ');
+    for (var n = 0; n < mediaArray.length; n++) {
+      if (currentGenId == mediaArray[n].id) {
+      currentGenres += (mediaArray[n].name+ ', ');
       }
     }
   }
+  console.log(currentGenres);
   return currentGenres;
 }
 
 /* PRINT-TALENT-LIST*/
-function printTalentList(item, cardType) {
-  /*grab the id of the current item*/
-  var itemId = item.id;
-  /*build appropriate endpoint based on media type*/
+function printTalentList(itemId, cardType) {
   if (cardType == 'series') {
     var currentEndPoint = 'tv/' + itemId + '/credits';
   } else if (cardType == 'movie') {
@@ -353,9 +350,7 @@ function printTalentList(item, cardType) {
       'api_key': api_key,
       'query': null,/***will I need this for the genres?***/
     },
-    'success': function(data, itemId) {
-      /*grab the id again because ducking local variables*/
-      var itemId = item.id;
+    'success': function(data) {
       var talentList = [];
       /*go through the whole list of results, if needed*/
       for (var i = 0; i < data.cast.length; i++) {
@@ -363,7 +358,7 @@ function printTalentList(item, cardType) {
         var talent = data.cast[i].name;
         /*if the list hasn't reached 5 items*/
         if (talentList.length < 5) {
-          /*if the current name is a valid value*/
+          /*and if the current name is a valid value*/
           if (talent != undefined && talent != null) {
             /*add to list of talents*/
             talentList.push(' ' + talent);
@@ -384,30 +379,31 @@ function printTalentList(item, cardType) {
 
 /*NO-DUPLICATE-TITLE - if the title and original title are the same, show only the title*/
 function noDuplicateTitle(item) {
+  itemId = item.id;
   /*if title and original titles are equal, and neither is undefined*/
   if (item.title != undefined && (item.title == item.original_title) || item.name != undefined && (item.name == item.original_name)) {
     /*print only one title*/
-    $('.item-card:last-child li[data-info-type="original-title"]').remove();
+    $('.item-card[data-card-id="' + itemId + '"] li[data-info-type="original-title"]').remove();
   }
 }
 
 /*KEEP-FLAG-IF-AVAILABLE - if you have a flag icon for the requested language, remove language list item. Otherwise remove flag list item.*/
-function keepFlagIfAvaliable(forItem) {
+function keepFlagIfAvaliable(forLanguage, itemId) {
   /*list of available flags*/
   var availableLanguages = ['ar', 'de', 'en', 'es', 'fr', 'it', 'ja', 'zh'];
   /*if you have a flag for the current item's language*/
-  if (availableLanguages.includes(forItem.original_language.toString())) {
+  if (availableLanguages.includes(forLanguage.toString())) {
     /*remove the language list item*/
-    $('.item-card:last-child li[data-info-type="language"]').remove();
+    $('.item-card[data-card-id="' + itemId + '"] li[data-info-type="language"]').remove();
   /*if you don't have a flag*/
   } else {
     /*remove the flag list item*/
-    $('.item-card:last-child li[data-info-type="lang-flag"]').remove();
+    $('.item-card[data-card-id="' + itemId + '"] li[data-info-type="lang-flag"]').remove();
   }
 };
 
 /*FILL-STARS - get average vote, fit to scale of 5, fill stars (and halves) in html accordingly*/
-function fillStars(voteAverage) {
+function fillStars(voteAverage, itemId) {
   var base5Vote = (voteAverage / 2).toString();
   base5VoteElements = base5Vote.split('.');
   if (base5VoteElements[1] < 10) {
@@ -416,21 +412,21 @@ function fillStars(voteAverage) {
   /*grab the first x empty stars based on starsNr value*/
   for (var i = 1; i <= base5VoteElements[0]; i++) {
     /*grab all those stars and make them full*/
-    $('.item-card:last-child li[data-info-type="vote"] i:nth-child('+(i)+')').removeClass('far').addClass('fas');
+    $('.item-card[data-card-id="' + itemId + '"] li[data-info-type="vote"] i:nth-child('+(i)+')').removeClass('far').addClass('fas');
   }
   if (base5VoteElements[1] > 50) {
-    $('.item-card:last-child li[data-info-type="vote"] i:nth-child('+(i)+')').attr('class', '').attr('class', 'fas fa-star-half-alt')
+    $('.item-card[data-card-id="' + itemId + '"] li[data-info-type="vote"] i:nth-child('+(i)+')').attr('class', '').attr('class', 'fas fa-star-half-alt')
   }
 }
 
 /*MANAGE-EMPTY-CARDS - if a card's image path isn't present, remove the whole img element*/
-function manageEmptyCards(item) {
-  if (item.backdrop_path === null) {
-    $('.item-card:last-child img').remove();
+function manageEmptyCards(imagePath, itemId) {
+  if (imagePath === null) {
+    $('.item-card[data-card-id="' + itemId + '"] img').remove();
     /*display warning text*/
-    $('.item-card:last-child .item-card-noimg').addClass('active');
+    $('.item-card[data-card-id="' + itemId + '"] .item-card-noimg').addClass('active');
   } else {
-    $('.item-card:last-child .item-card-noimg').remove();
+    $('.item-card[data-card-id="' + itemId + '"] .item-card-noimg').remove();
   }
 }
 
