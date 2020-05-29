@@ -85,14 +85,14 @@ $('.dropdown').on('click', 'li', function() {
 /*on click on an item-card, show the back of the card. On mouseleave, show the front*/
 $('#results-display').on('click', '.item-card', function() {
   $(this).find('.item-card-img').removeClass('active');
+  $(this).find('.item-card-noimg').removeClass('active');
   $(this).find('.item-card-title').removeClass('active');
   $(this).find('.item-card-info').addClass('active');
-  $(this).find('.item-card-noimg').removeClass('active');
 }).on('mouseleave', '.item-card', function() {
   $(this).find('.item-card-img').addClass('active');
+  $(this).find('.item-card-noimg').addClass('active');
   $(this).find('.item-card-title').addClass('active');
   $(this).find('.item-card-info').removeClass('active');
-  $(this).find('.item-card-noimg').addClass('active');
 });
 
 /*when the user picks a page from the pagination select*/
@@ -178,12 +178,15 @@ function search() {
   }
 };
 
+/*CLEAN-SLATE - reset all the things that get compiled with every search*/
 function cleanSlate(currentSearch) {
   $('.searchbar').val('');
   /*remove any cards already in page*/
   $('#results-display .item-card').remove();
   /*remove any option from pagination select*/
-  $('.header-right option').remove();
+  // $('.header-right option').remove();
+  $('.pagination-container').removeClass('active');
+  $('.pagination-container option').remove();
   $('#results-display').attr('data-movie-pages', '');
   $('#results-display').attr('data-tv-pages', '');
   /*remove related search terms*/
@@ -209,12 +212,8 @@ function callAjax(searchString, endPoint, cardType, pageNr) {
       if (data.total_results != 0) {
         /*show related terms bar*/
         $('.results-display-header').addClass('active');
-
-        /***pagination attempt***/
         /*get total number of pages for the current call*/
         setupPagination(data, cardType);
-         /***pagination attempt - end***/
-
         /*handle the info in data.results*/
         handleDataResults(data.results, cardType);
       /* if the search returns nothing, tell the user*/
@@ -228,7 +227,7 @@ function callAjax(searchString, endPoint, cardType, pageNr) {
   })/*ajax end*/
 }
 
-
+/*SETUP-PAGINATION - get the total number of pg per media type and compare them by setting up sentries, then print the options in page*/
 function setupPagination(data, cardType) {
   var pages = data.total_pages;
   /*create sentries for both movies and tv shows with total page nr*/
@@ -248,6 +247,7 @@ function setupPagination(data, cardType) {
       printPageNrOptions(tvSentry);
     }
   }
+  $('.pagination-container').addClass('active');
 }
 
 /*PRINT-PAGE-NR-OPTIONS - generate as many options in the pagination select as needed*/
@@ -270,7 +270,12 @@ function handleDataResults(resultsArray, cardType) {
     printTalentList(currentItem, cardType);
     noDuplicateTitle(currentItem);
     keepFlagIfAvaliable(currentItem);
-    fillStarsAlt(currentItem.vote_average);
+    if (currentItem.vote_average != 0) {
+      $('.item-card:last-child li[data-info-type="voteNA"]').remove();
+      fillStars(currentItem.vote_average);
+    } else {
+      $('.item-card:last-child li[data-info-type="vote"]').remove();
+    }
     manageEmptyCards(currentItem);
   }
 };
@@ -401,26 +406,12 @@ function keepFlagIfAvaliable(forItem) {
   }
 };
 
-/*PRINT-FULL-STARS - get average vote, fit to scale of 5, fill stars in html according to average vote*/
+/*FILL-STARS - get average vote, fit to scale of 5, fill stars (and halves) in html accordingly*/
 function fillStars(voteAverage) {
-  /*make the average vote a rounded number from 1 to 5*/
-  var starsNr = Math.round(voteAverage / 2);
-  /*grab the first x empty stars based on starsNr value*/
-  // var stars = $('.item-card:last-child li[data-info-type="vote"] i').slice(0, starsNr);/*** questa la lasciamo a imperitura memoria perché LAMISERIA (ma ci vorrebbe pure lo stars.length sotto)***/
-  for (var i = 1; i <= starsNr; i++) {
-    /*grab all those stars and make them full*/
-    $('.item-card:last-child li[data-info-type="vote"] i:nth-child('+(i)+')').removeClass('far').addClass('fas');
-  }
-}
-
-function fillStarsAlt(voteAverage) {
   var base5Vote = (voteAverage / 2).toString();
-  console.log(base5Vote);
   base5VoteElements = base5Vote.split('.');
-  console.log(base5VoteElements);
   if (base5VoteElements[1] < 10) {
     base5VoteElements[1] = base5VoteElements[1] + '0';
-    console.log('after: ' + base5VoteElements);
   }
   /*grab the first x empty stars based on starsNr value*/
   for (var i = 1; i <= base5VoteElements[0]; i++) {
@@ -444,3 +435,16 @@ function manageEmptyCards(item) {
 }
 
 })/*DNT closing doc.ready*/
+
+/* * USELESS KEEPSAKE * */
+// function fillStarsOLD(voteAverage) {
+//   /*make the average vote a rounded number from 1 to 5*/
+//   var starsNr = Math.round(voteAverage / 2);
+//   /*grab the first x empty stars based on starsNr value*/
+//   /*** questa qui sotto la lasciamo a imperitura memoria perché LAMISERIA ma come mi è venuto in mente quella volta di perderci un pomeriggio per una riga che NON SERVIVA***/
+//   var stars = $('.item-card:last-child li[data-info-type="vote"] i').slice(0, starsNr);
+//   for (var i = 1; i <= stars.length; i++) {
+//     /*grab all those stars and make them full*/
+//     $('.item-card:last-child li[data-info-type="vote"] i:nth-child('+(i)+')').removeClass('far').addClass('fas');
+//   }
+// }
