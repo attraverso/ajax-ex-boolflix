@@ -1,5 +1,3 @@
-/*CHALLENGE: do not write any html in main.js*/
-
 $(document).ready(function() {
 
 /*set global constants*/
@@ -319,17 +317,20 @@ function printMovieDetails(item, cardType) {
 }
 
 /* GET-GENRES-NAMES - given an item's genre ids, get the corresponding names instead*/
-function getGenresNames(mediaArray, itemGenreIds) {
+function getGenresNames(mediaGenresArray, itemGenreIds) {
   var currentGenres = '';
   /*go through the item's genre ids and grab one at a time*/
+  // debugger;
   for (var i = 0; i < itemGenreIds.length; i++) {
     var currentGenId = itemGenreIds[i];
     /*go through all the genres for that media type, if there's a match, print the name*/
-    for (var n = 0; n < mediaArray.length; n++) {
-      if (currentGenId == mediaArray[n].id) {
-      currentGenres += (mediaArray[n].name+ ', ');
-      }
+    for (var n = 0; n < mediaGenresArray.length; n++) {
+      if (currentGenId == mediaGenresArray[n].id && i != (itemGenreIds.length - 1)) {
+      currentGenres += (mediaGenresArray[n].name+ ', ');
+    } else if (currentGenId == mediaGenresArray[n].id && i == (itemGenreIds.length - 1)) {
+    currentGenres += mediaGenresArray[n].name;
     }
+  }
   }
   console.log(currentGenres);
   return currentGenres;
