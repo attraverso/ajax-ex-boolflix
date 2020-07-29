@@ -1,4 +1,4 @@
-$(document).ready(function() {
+// $(document).ready(function() { /*commented because it was deferred in the htrml script*/
 
 /*set global constants*/
 const api_url = 'https://api.themoviedb.org/3/';
@@ -431,7 +431,7 @@ function manageEmptyCards(imagePath, itemId) {
   }
 }
 
-})/*DNT closing doc.ready*/
+//})/*DNT closing doc.ready*/
 
 /* * USELESS KEEPSAKE * */
 // function fillStarsOLD(voteAverage) {
