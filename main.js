@@ -4,6 +4,8 @@
 const api_url = 'https://api.themoviedb.org/3/';
 const api_key = 'e99307154c6dfb0b4750f6603256716d';
 const img_url = 'https://image.tmdb.org/t/p/';
+const tvGenresEndpoint = 'genre/tv/list';
+const movieGenresEndpoint = 'genre/movie/list';
 
 /*compile template*/
 var listTemplateSource = $('#list-template').html();
@@ -15,13 +17,11 @@ var paginationTemplate = Handlebars.compile(paginationTemplateSource);
 
 /*grab all tv and movie genres and store them for later use*/
 var tvGenres = [];
-var tvGenresEndpoint = 'genre/tv/list';
 var movieGenres = [];
-var movieGenresEndpoint = 'genre/movie/list';
 getTvGenres(tvGenresEndpoint);
 getMovieGenres(movieGenresEndpoint);
 
-/*when Enter is pressed, start search*/
+/*searchbar: while typing, start search if the Enter key is pressed*/
 $('.searchbar').keypress(function(event) {
   if (event.which == 13) {
     search();
@@ -30,14 +30,16 @@ $('.searchbar').keypress(function(event) {
   }
 });
 
-/*on click on searchbar cross, hide searchbar*/
+/*searchbar: on click on searchbar cross, hide searchbar*/
 $('.searchbar-cross').click(function() {
   $('.searchbar').val('');
   $('.searchbar').removeClass('active');
   $('.searchbar-cross').removeClass('active');
 })
 
-/*on click on search icon, if the input is displayed, start search*/
+/*on click on search icon in header:
+* if the input field is displayed, start search
+* it it's not, fisplay input field*/
 $('.header-right .fa-search').click(function(){
   if ($('.searchbar').hasClass('active')) {
     $('.header-right .fa-search').click(search);
@@ -47,7 +49,7 @@ $('.header-right .fa-search').click(function(){
   }
 })
 
-/*on click on tv/movies in header-left, show genres selection dropdown. hide on mouseleave*/
+/*menu: on click on tv/movies menu item in header-left, show genres selection dropdown. hide on mouseleave*/
 $('.dropdown-hook').click(function() {
   $(this).children('.dropdown').toggleClass('active');
 }).mouseleave(function() {
@@ -57,7 +59,7 @@ $('.dropdown').mouseleave(function() {
   $(this).removeClass('active');
 })
 
-/*on click on dropdown item, leave on page only the cards of matching genre*/
+/*menu: on click on genres dropdown item, display on page only the cards of matching genre*/
 $('.dropdown').on('click', 'li', function() {
   $('.item-card').show();
   var lookFor = $(this).text();
@@ -72,7 +74,7 @@ $('.dropdown').on('click', 'li', function() {
   // filterCards(lookFor);
 })
 
-/*** currently failed attempt at putting all this in a function***/
+/*** //XXX currently failed attempt at putting all this in a function***/
 // function filterCards(genre) {
 //   $('.item-card').each(function() {
 //     var currentGenres = $(this).find('li[data-info-type="genres"]').text();
@@ -81,7 +83,7 @@ $('.dropdown').on('click', 'li', function() {
 //   })
 // }
 
-/*on click on an item-card, show the back of the card. On mouseleave, show the front*/
+/*cards: on click on an item-card, show the back of the card. On mouseleave, show the front*/
 $('#results-display').on('click', '.item-card', function() {
   $(this).find('.item-card-img').removeClass('active');
   $(this).find('.item-card-noimg').removeClass('active');
@@ -94,7 +96,7 @@ $('#results-display').on('click', '.item-card', function() {
   $(this).find('.item-card-info').removeClass('active');
 });
 
-/*when the user picks a page from the pagination select*/
+/*pagination: when the user picks a page from the pagination select*/
 $('.page-select').on('click', 'option', function() {
   /*grab current search term from search sentry*/
   var currentSearch = $('.searchbar').attr('data-search-sentry');
@@ -212,7 +214,7 @@ function callAjax(searchString, endPoint, cardType, pageNr) {
         /*show related terms bar*/
         $('.results-display-header').addClass('active');
         /*get total number of pages for the current call*/
-        setupPagination(data.total_pages, cardType);
+        setupPagination(data.total_pages, cardType, pageNr);
         /*handle the info in data.results*/
         handleDataResults(data.results, cardType);
       /* if the search returns nothing, tell the user*/
@@ -226,8 +228,9 @@ function callAjax(searchString, endPoint, cardType, pageNr) {
   })/*ajax end*/
 }
 
-/*SETUP-PAGINATION - get the total number of pg per media type and compare them by setting up sentries, then print the options in page*/
-function setupPagination(totalPages, cardType) {
+/*SETUP-PAGINATION - get the total number of pages per media type and compare the respective
+* lengths by setting up sentry data attributes, then print the options in page*/
+function setupPagination(totalPages, cardType, pageNr = 1) {
   /*create sentries for both movies and tv shows with total page nr*/
   if (cardType == 'movie') {
     $('#results-display').attr('data-movie-pages', totalPages);
@@ -238,7 +241,8 @@ function setupPagination(totalPages, cardType) {
   var tvSentry = $('#results-display').attr('data-tv-pages');
   /*don't act on the first call, where one of the two sentries is still empty*/
   if (movieSentry != '' && tvSentry != '') {
-    /*learn which media type gets more results, then use the bigger number to create as many select options*/
+    /*learn which media type gets more results, then use the bigger number
+    * to create as many select options*/
     if (movieSentry >= tvSentry) {
       printPageNrOptions(movieSentry);
     } else if (tvSentry > movieSentry) {
@@ -246,6 +250,7 @@ function setupPagination(totalPages, cardType) {
     }
   }
   $('.pagination-container').addClass('active');
+  $('.page-select').val(pageNr);
 }
 
 /*PRINT-PAGE-NR-OPTIONS - generate as many options in the pagination select as needed*/
