@@ -21,6 +21,9 @@ var movieGenres = [];
 getTvGenres(tvGenresEndpoint);
 getMovieGenres(movieGenresEndpoint);
 
+/* close disclaimer tab*/
+$('.disclaimer-close').click(() => $('.disclaimer').hide())
+
 /*searchbar: while typing, start search if the Enter key is pressed*/
 $('.searchbar').keypress(function(event) {
   if (event.which == 13) {

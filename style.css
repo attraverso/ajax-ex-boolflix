@@ -45,6 +45,38 @@ main {
   margin: auto;
 }
 
+/* disclaimer box */
+.disclaimer {
+  width: 500px;
+  height: 170px;
+  background-color: #ccc;
+  color: #000;
+  text-align: center;
+  position: absolute;
+  top: 50vh;
+  left: 50vw;
+  transform: translate(-50%, -50%);
+  padding: 30px;
+  border-radius: 5px;
+  border: 3px dashed red;
+}
+
+.disclaimer-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.disclaimer-body {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.disclaimer-close {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /* dropdown items in header-left */
 .dropdown {
   width: 140px;
